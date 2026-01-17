@@ -1,0 +1,93 @@
+.cert-page {
+  padding: 20px;
+}
+
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.cert-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.cert-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 20px;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+.cert-card h2 {
+  font-size: 20px;
+  margin: 20px 0;
+}
+
+.badge {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.active {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.expiringsoon {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.expired {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.dates {
+  display: flex;
+  justify-content: space-between;
+  margin: 15px 0;
+  font-size: 14px;
+}
+
+.auth {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 15px;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.view-btn {
+  flex: 1;
+  background: #0f172a;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.download-btn {
+  width: 42px;
+  background: #e5e7eb;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
