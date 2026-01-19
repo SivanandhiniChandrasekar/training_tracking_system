@@ -1,0 +1,120 @@
+.dashboard {
+  max-width: 1300px;
+  margin: auto;
+}
+
+.dashboard-title {
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+/* Cards */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+.stat-card p {
+  color: #64748b;
+}
+
+.stat-card h2 {
+  margin-top: 8px;
+  font-size: 26px;
+}
+
+/* Grid */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 2.2fr 1fr;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+.card h3 {
+  margin-bottom: 14px;
+}
+
+/* Bar Chart */
+.bar-chart {
+  height: 260px;
+  display: flex;
+  align-items: flex-end;
+  gap: 18px;
+}
+
+.bar-item {
+  flex: 1;
+  text-align: center;
+}
+
+.bar {
+  background: linear-gradient(180deg, #6ea8ff, #4f8cff);
+  border-radius: 8px;
+  transition: 0.3s;
+}
+
+.bar:hover {
+  opacity: 0.8;
+}
+
+.bar-item span {
+  margin-top: 6px;
+  display: block;
+  font-size: 13px;
+}
+
+/* Activity */
+.activity-list li {
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  text-align: left;
+  color: #475569;
+}
+
+th, td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #eee;
+}
+
+/* Progress */
+.progress-box {
+  margin-bottom: 16px;
+}
+
+.progress-bar {
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.progress-bar div {
+  height: 100%;
+  background: #4f8cff;
+}
