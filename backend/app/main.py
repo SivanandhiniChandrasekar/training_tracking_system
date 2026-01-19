@@ -7,7 +7,7 @@ from app.routes.users import router as users_router
 from app.routes.courses import router as courses_router
 from app.routes.certificates import router as certificates_router
 from app.routes.enrollments import router as enrollments_router
-
+from apscheduler.schedulers.background import BackgroundScheduler
 
 # -------------------------------
 # CREATE DB TABLES
@@ -53,3 +53,24 @@ def root():
 @app.get("/health")
 def health():
     return {"status": "OK"}
+
+from app.core.certificate_cron import (
+    certificate_expiry_reminder_job,
+    certificate_expired_job
+)
+
+scheduler = BackgroundScheduler()
+
+scheduler.add_job(
+    certificate_expiry_reminder_job,
+    "cron",
+    hour=9
+)
+
+scheduler.add_job(
+    certificate_expired_job,
+    "cron",
+    hour=10
+)
+
+scheduler.start()

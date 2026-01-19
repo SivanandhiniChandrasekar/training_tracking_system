@@ -2,18 +2,60 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 import uuid
-from datetime import datetime
+from datetime import datetime,timedelta
 
 from app.dependencies import get_current_user
 from app.database import get_db
 from app import models, schemas
 from app.utils.certificate_pdf import generate_certificate_pdf
 from app.utils.email import send_certificate_email
+from app.schemas.certificates import CertificateValidityResponse
+
+
+VALIDITY_DAYS = 365
 
 router = APIRouter(
     prefix="/certificates",
     tags=["Certificates"]
 )
+
+
+@router.get(
+    "/verify/{certificate_code}",
+    response_model=CertificateValidityResponse
+)
+def verify_certificate(
+    course_id: int,
+    db: Session = Depends(get_db)
+):
+    certificate = db.query(models.Certificate).filter(
+        models.Certificate.course_id == course_id
+    ).first()
+
+    if not certificate:
+        raise HTTPException(
+            status_code=404,
+            detail="Certificate not found"
+        )
+
+    now = datetime.utcnow()
+
+    if certificate.is_expired or now > certificate.expiry_date:
+        return {
+            "certificate_code": certificate.certificate_code,
+            "is_valid": False,
+            "issued_at": certificate.issued_at,
+            "expiry_date": certificate.expiry_date,
+            "reason": "Certificate expired"
+        }
+
+    return {
+        "certificate_code": certificate.certificate_code,
+        "is_valid": True,
+        "issued_at": certificate.issued_at,
+        "expiry_date": certificate.expiry_date,
+        "reason": "Certificate is valid"
+    }
 
 # ---------------------------------
 # 1️⃣ GENERATE CERTIFICATE
@@ -52,11 +94,12 @@ def generate_certificate(
 
     # ✅ Create certificate record
     certificate = models.Certificate(
-        user_id=current_user.id,
-        course_id=cert.course_id,
-        issued_at=datetime.utcnow(),
-        certificate_code=str(uuid.uuid4())
-    )
+    user_id=current_user.id,
+    course_id=cert.course_id,
+    issued_at=datetime.utcnow(),
+    expiry_date=datetime.utcnow() + timedelta(days=VALIDITY_DAYS),
+    certificate_code=str(uuid.uuid4())
+)
 
     db.add(certificate)
     db.commit()

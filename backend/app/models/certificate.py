@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy import Boolean, Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.database import Base
@@ -10,6 +10,8 @@ class Certificate(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     course_id = Column(Integer, ForeignKey("courses.id"), nullable=False)
     issued_at = Column(DateTime, default=datetime.utcnow)
+    expiry_date = Column(DateTime, nullable = False)
+    is_expired = Column(Boolean, default = False)
     certificate_code = Column(String(100), unique=True, index=True)
     certificate_url = Column(String(255))
 

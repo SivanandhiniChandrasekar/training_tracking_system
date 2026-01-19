@@ -1,3 +1,4 @@
+from datetime import datetime
 import smtplib
 from email.message import EmailMessage
 from pathlib import Path
@@ -10,7 +11,12 @@ SMTP_PORT = 587
 SENDER_EMAIL = "urgentmails111@gmail.com"
 SENDER_PASSWORD = "jyvoejllqqfncrse"
 
-
+def _send_email(msg: EmailMessage):
+    with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+        server.starttls()
+        server.login(SENDER_EMAIL, SENDER_PASSWORD)
+        server.send_message(msg)
+        
 def send_certificate_email(
     to_email: str,
     user_name: str,
@@ -47,9 +53,70 @@ CERITRACK Team
             subtype="pdf",
             filename=pdf_file.name
         )
+    
+    _send_email(msg)
 
-    # 📤 Send email
-    with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-        server.starttls()
-        server.login(SENDER_EMAIL, SENDER_PASSWORD)
-        server.send_message(msg)
+# -------------------------------------------------
+# 2️⃣ CERTIFICATE EXPIRY REMINDER
+# -------------------------------------------------
+def send_certificate_expiry_reminder(
+    to_email: str,
+    user_name: str,
+    course_name: str,
+    expiry_date: datetime
+):
+    msg = EmailMessage()
+    msg["Subject"] = "⏰ Certificate Expiry Reminder"
+    msg["From"] = SENDER_EMAIL
+    msg["To"] = to_email
+
+    msg.set_content(
+        f"""
+Hello {user_name},
+
+This is a reminder that your certificate for the course
+➡ {course_name}
+
+will expire on:
+📅 {expiry_date.strftime('%d %B %Y')}
+
+Please renew or re-enroll if required.
+
+Best regards,
+CERITRACK Team
+"""
+    )
+
+    _send_email(msg)
+
+
+# -------------------------------------------------
+# 3️⃣ CERTIFICATE EXPIRED EMAIL
+# -------------------------------------------------
+def send_certificate_expired_email(
+    to_email: str,
+    user_name: str,
+    course_name: str
+):
+    msg = EmailMessage()
+    msg["Subject"] = "❌ Certificate Expired"
+    msg["From"] = SENDER_EMAIL
+    msg["To"] = to_email
+
+    msg.set_content(
+        f"""
+Hello {user_name},
+
+Your certificate for the course
+➡ {course_name}
+
+has expired.
+
+To obtain a new certificate, please re-enroll and complete the course again.
+
+Best regards,
+CERITRACK Team
+"""
+    )
+
+    _send_email(msg)

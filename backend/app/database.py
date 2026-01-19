@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
 SQLALCHEMY_DATABASE_URL = (
-    "mysql+pymysql://root:root%40123@localhost:3306/training_tracking_system"
+    "mysql+pymysql://root:Cbsks%402004@localhost:3306/training_tracking_system"
 )
 
 # ✅ MySQL engine (NO check_same_thread)

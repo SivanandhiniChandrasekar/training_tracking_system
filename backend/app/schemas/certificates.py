@@ -27,3 +27,10 @@ class CertificateMeResponse(BaseModel):
     course_title: str
     issued_at: Optional[datetime]
     download_url: str
+
+class CertificateValidityResponse(BaseModel):
+    certificate_code: str
+    is_valid: bool
+    issued_at: datetime
+    expiry_date: datetime
+    reason: str
