@@ -2,59 +2,72 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "./CourseDetail.css";
 
+const getYouTubeId = (url) => {
+  if (!url) return "";
+
+  if (url.includes("youtu.be/")) {
+    return url.split("youtu.be/")[1].split("?")[0];
+  }
+
+  if (url.includes("watch?v=")) {
+    return url.split("watch?v=")[1].split("&")[0];
+  }
+
+  if (url.includes("/embed/")) {
+    return url.split("/embed/")[1].split("?")[0];
+  }
+
+  return url;
+};
+
 export default function CourseDetail() {
   const { courseId } = useParams();
   const [videos, setVideos] = useState([]);
   const [title, setTitle] = useState("");
   const [url, setUrl] = useState("");
 
-useEffect(() => {
-  const loadVideos = async () => {
-    const res = await fetch(
-      `http://127.0.0.1:8000/courses/${courseId}/videos`
-    );
-    const data = await res.json();
-    setVideos(data);
-  };
-  loadVideos();
-}, [courseId]);
-
+  // Load videos
+  useEffect(() => {
+    loadVideos();
+  }, [courseId]);
 
   const loadVideos = async () => {
     try {
       const res = await fetch(
         `http://127.0.0.1:8000/courses/${courseId}/videos`
       );
-      if (!res.ok) throw new Error("Failed to load videos");
       const data = await res.json();
       setVideos(data);
     } catch (err) {
       console.error(err);
-      alert("Failed to load videos");
     }
   };
 
+  // Add video
   const addVideo = async () => {
     if (!title || !url) {
       alert("Fill all fields");
       return;
     }
 
+    const videoId = getYouTubeId(url);
+
     try {
-      const res = await fetch(
+      await fetch(
         `http://127.0.0.1:8000/courses/${courseId}/videos`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ title, url }),
+          body: JSON.stringify({
+            title: title,
+            url: videoId,   // ✅ ONLY ID stored
+          }),
         }
       );
 
-      if (!res.ok) throw new Error("Upload failed");
-
       setTitle("");
       setUrl("");
-      loadVideos(); // reload after upload
+      loadVideos();
     } catch (err) {
       console.error(err);
       alert("Upload failed");
@@ -72,7 +85,7 @@ useEffect(() => {
           onChange={(e) => setTitle(e.target.value)}
         />
         <input
-          placeholder="Video URL"
+          placeholder="YouTube URL"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
         />
@@ -83,14 +96,15 @@ useEffect(() => {
         {videos.length === 0 && <p>No videos uploaded yet</p>}
 
         {videos.map((v) => (
-          <div key={v.id}>
+          <div key={v.id} className="video-card">
             <h4>{v.title}</h4>
             <iframe
               width="100%"
               height="220"
-              src={`https://www.youtube.com/embed/${v.url.split("v=").pop()}`}
+              src={`https://www.youtube.com/embed/${v.url}`}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
-            />
+            ></iframe>
           </div>
         ))}
       </div>

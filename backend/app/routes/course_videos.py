@@ -5,9 +5,12 @@ from app.database import get_db
 from app.schemas import VideoCreate
 from app.models import CourseVideo
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/courses",
+    tags=["Courses"]
+)
 
-@router.post("/courses/{course_id}/videos")
+@router.post("/{course_id}/videos")
 def add_video(course_id: str, video: VideoCreate, db: Session = Depends(get_db)):
     new_video = CourseVideo(
         course_id=course_id,
@@ -17,9 +20,10 @@ def add_video(course_id: str, video: VideoCreate, db: Session = Depends(get_db))
     db.add(new_video)
     db.commit()
     db.refresh(new_video)
-    return {"message": "Video added successfully"}
+    return new_video
 
-@router.get("/courses/{course_id}/videos")
+
+@router.get("/{course_id}/videos")
 def get_videos(course_id: str, db: Session = Depends(get_db)):
     return db.query(CourseVideo).filter(
         CourseVideo.course_id == course_id
